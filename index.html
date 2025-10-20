@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Fariha!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for the celebratory theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Hide scrollbars */
+            background-color: #0c0a1a; /* Deep night sky color */
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .content-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+        }
+
+        .birthday-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem; /* 48px */
+            animation: fadeIn 3s ease-in-out;
+            text-shadow: 0 0 10px #ffc300, 0 0 20px #ffc300, 0 0 30px #ffc300, 0 0 40px #ff5733;
+        }
+
+        @media (min-width: 768px) {
+            .birthday-text {
+                font-size: 5rem; /* 80px */
+            }
+        }
+        
+        /* Balloon styles and animations */
+        .balloon {
+            width: 70px;
+            height: 90px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -150px; /* Start below the screen */
+            opacity: 0.8;
+            animation: floatUp 10s infinite linear;
+            box-shadow: inset -10px -10px 0 rgba(0,0,0,0.07);
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 10px solid;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            100% {
+                transform: translateY(-120vh) translateX(50px * sin(calc(var(--i) * 1deg))); /* Float up and sway gently */
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Fireworks canvas */
+        #fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none; /* Allows clicks to go through to other elements if needed */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particle.js background -->
+    <div id="particles-js"></div>
+
+    <!-- Fireworks Canvas -->
+    <canvas id="fireworks-canvas"></canvas>
+
+    <!-- Main Content -->
+    <div class="content-container p-4">
+        <h1 class="birthday-text mb-4">Happy Birthday</h1>
+        <h2 class="text-2xl md:text-4xl font-bold tracking-wider" style="text-shadow: 0 0 15px #c70039;">
+            Fariha Jahan Sabrin! <!-- name change -->
+        </h2>
+        <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl">
+            On your special day, I pray that Allah blesses you with endless happiness, good health, and success in all your endeavors. May your life be filled with faith, joy, and peace.
+        </p>
+    </div>
+
+    <!-- Balloon container -->
+    <div id="balloon-container"></div>
+
+    <!-- Particle.js library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        // --- PARTICLES.JS INITIALIZATION ---
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
+                "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": 3, "random": true, "anim": { "enable": false } },
+                "line_linked": { "enable": false },
+                "move": { "enable": true, "speed": 1, "direction": "top", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false } } },
+            "retina_detect": true
+        });
+
+        // --- FIREWORKS SCRIPT ---
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let fireworks = [];
+        let fireworkParticles = [];
+
+        // Helper function to get a random number
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Firework constructor
+        function Firework(sx, sy, tx, ty) {
+            this.x = sx;
+            this.y = sy;
+            this.sx = sx;
+            this.sy = sy;
+            this.tx = tx;
+            this.ty = ty;
+            this.distanceToTarget = Math.sqrt(Math.pow(tx - sx, 2) + Math.pow(ty - sy, 2));
+            this.distanceTraveled = 0;
+            this.coordinates = [];
+            this.coordinateCount = 3;
+            while (this.coordinateCount--) {
+                this.coordinates.push([this.x, this.y]);
+            }
+            this.angle = Math.atan2(ty - sy, tx - sx);
+            this.speed = 2;
+            this.acceleration = 1.05;
+            this.brightness = random(50, 70);
+            this.targetRadius = 1;
+        }
+
+        Firework.prototype.update = function(index) {
+            this.coordinates.pop();
+            this.coordinates.unshift([this.x, this.y]);
+            
+            if(this.targetRadius < 8) {
+                this.targetRadius += 0.3;
+            } else {
+                this.targetRadius = 1;
+            }
+
+            this.speed *= this.acceleration;
+            let vx = Math.cos(this.angle) * this.speed;
+            let vy = Math.sin(this.angle) * this.speed;
+            this.distanceTraveled = Math.sqrt(Math.pow(this.x - this.sx, 2) + Math.pow(this.y - this.sy, 2));
+
+            if (this.distanceTraveled >= this.distanceToTarget) {
+                createParticles(this.tx, this.ty);
+                fireworks.splice(index, 1);
+            } else {
+                this.x += vx;
+                this.y += vy;
+            }
+        };
+
+        Firework.prototype.draw = function() {
+            ctx.beginPath();
+            ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+            ctx.lineTo(this.x, this.y);
+            ctx.strokeStyle = `hsl(${random(0, 360)}, 100%, ${this.brightness}%)`;
+            ctx.stroke();
+        };
+
+        // Firework Particle constructor
+        function FireworkParticle(x, y) {
+            this.x = x;
+            this.y = y;
+            this.coordinates = [];
+            this.coordinateCount = 5;
+            while(this.coordinateCount--) {
+                this.coordinates.push([this.x, this.y]);
+            }
+            this.angle = random(0, Math.PI * 2);
+            this.speed = random(1, 10);
+            this.friction = 0.95;
+            this.gravity = 1;
+            this.hue = random(0, 360);
+            this.brightness = random(50, 80);
+            this.alpha = 1;
+            this.decay = random(0.015, 0.03);
+        }
+
+        FireworkParticle.prototype.update = function(index) {
+            this.coordinates.pop();
+            this.coordinates.unshift([this.x, this.y]);
+            this.speed *= this.friction;
+            this.x += Math.cos(this.angle) * this.speed;
+            this.y += Math.sin(this.angle) * this.speed + this.gravity;
+            this.alpha -= this.decay;
+            if (this.alpha <= this.decay) {
+                fireworkParticles.splice(index, 1);
+            }
+        };
+
+        FireworkParticle.prototype.draw = function() {
+            ctx.beginPath();
+            ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]);
+            ctx.lineTo(this.x, this.y);
+            ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
+            ctx.stroke();
+        };
+
+        function createParticles(x, y) {
+            let particleCount = 30;
+            while (particleCount--) {
+                fireworkParticles.push(new FireworkParticle(x, y));
+            }
+        }
+        
+        function launchFirework() {
+            if (fireworks.length < 10) { // Limit number of fireworks on screen
+                 const startX = canvas.width / 2;
+                 const startY = canvas.height;
+                 const targetX = random(0, canvas.width);
+                 const targetY = random(0, canvas.height / 2);
+                 fireworks.push(new Firework(startX, startY, targetX, targetY));
+            }
+        }
+
+        function fireworksLoop() {
+            requestAnimationFrame(fireworksLoop);
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'lighter';
+
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                fireworks[i].draw();
+                fireworks[i].update(i);
+            }
+
+            for (let i = fireworkParticles.length - 1; i >= 0; i--) {
+                fireworkParticles[i].draw();
+                fireworkParticles[i].update(i);
+            }
+        }
+        
+        setInterval(launchFirework, 800);
+        window.onload = fireworksLoop;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+
+        // --- BALLOON SCRIPT ---
+        const balloonContainer = document.getElementById('balloon-container');
+        const colors = ['#ff5733', '#33ff57', '#3357ff', '#ff33a1', '#a133ff', '#33fff0', '#ffd700'];
+
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            balloon.style.backgroundColor = color;
+            balloon.style.left = `${Math.random() * 90}%`; // Random horizontal position
+            balloon.style.animationDuration = `${random(8, 15)}s`; // Random float speed
+            balloon.style.animationDelay = `${random(0, 5)}s`; // Staggered start times
+            balloon.style.setProperty('--i', Math.random() * 360); // For swaying effect
+
+            // The little tie at the bottom
+            const tie = balloon.querySelector('::after');
+            if (tie) {
+                tie.style.borderTopColor = color;
+            }
+
+            balloonContainer.appendChild(balloon);
+
+            // Remove balloon from DOM after it floats off screen
+            setTimeout(() => {
+                balloon.remove();
+            }, 15000);
+        }
+
+        // Create a new balloon every second
+        setInterval(createBalloon, 1000);
+    </script>
+
+</body>
+</html>
+
