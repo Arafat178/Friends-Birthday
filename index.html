@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Rupok!</title>
+    <title>Happy Birthday!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -74,7 +74,8 @@
                 transform: translateY(0) translateX(0);
             }
             100% {
-                transform: translateY(-120vh) translateX(50px * sin(calc(var(--i) * 1deg))); /* Float up and sway gently */
+                /* Float up and sway gently */
+                transform: translateY(-120vh) translateX(50px * sin(calc(var(--i) * 1deg))); 
             }
         }
 
@@ -91,33 +92,28 @@
             width: 100%;
             height: 100%;
             z-index: 5;
-            pointer-events: none; /* Allows clicks to go through to other elements if needed */
+            pointer-events: none; /* Allows clicks to go through */
         }
     </style>
 </head>
 <body>
 
-    <!-- Particle.js background -->
     <div id="particles-js"></div>
 
-    <!-- Fireworks Canvas -->
     <canvas id="fireworks-canvas"></canvas>
 
-    <!-- Main Content -->
     <div class="content-container p-4">
         <h1 class="birthday-text mb-4">Happy Birthday</h1>
         <h2 class="text-2xl md:text-4xl font-bold tracking-wider" style="text-shadow: 0 0 15px #c70039;">
-            Rupok Sarwar Choudhury! <!-- name change -->
+            Lamia Tasnim Suhi!
         </h2>
         <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl">
             On your special day, I pray that Allah blesses you with endless happiness, good health, and success in all your endeavors. May your life be filled with faith, joy, and peace.
         </p>
     </div>
 
-    <!-- Balloon container -->
     <div id="balloon-container"></div>
 
-    <!-- Particle.js library -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
@@ -243,19 +239,21 @@
         };
 
         function createParticles(x, y) {
-            let particleCount = 30;
+            // --- MODIFIED: Increased particle count ---
+            let particleCount = 100; // Was 30
             while (particleCount--) {
                 fireworkParticles.push(new FireworkParticle(x, y));
             }
         }
         
         function launchFirework() {
-            if (fireworks.length < 10) { // Limit number of fireworks on screen
-                 const startX = canvas.width / 2;
-                 const startY = canvas.height;
-                 const targetX = random(0, canvas.width);
-                 const targetY = random(0, canvas.height / 2);
-                 fireworks.push(new Firework(startX, startY, targetX, targetY));
+            // --- MODIFIED: Increased simultaneous fireworks ---
+            if (fireworks.length < 40) { // Was 10
+                const startX = canvas.width / 2;
+                const startY = canvas.height;
+                const targetX = random(0, canvas.width);
+                const targetY = random(0, canvas.height / 2);
+                fireworks.push(new Firework(startX, startY, targetX, targetY));
             }
         }
 
@@ -277,7 +275,8 @@
             }
         }
         
-        setInterval(launchFirework, 800);
+        // --- MODIFIED: Increased launch frequency ---
+        setInterval(launchFirework, 400); // Was 800
         window.onload = fireworksLoop;
 
         window.addEventListener('resize', () => {
@@ -321,4 +320,3 @@
 
 </body>
 </html>
-
