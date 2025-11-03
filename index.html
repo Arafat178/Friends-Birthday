@@ -240,7 +240,7 @@
 
         function createParticles(x, y) {
             // --- MODIFIED: Increased particle count ---
-            let particleCount = 100; // Was 30
+            let particleCount = 150; // Was 30
             while (particleCount--) {
                 fireworkParticles.push(new FireworkParticle(x, y));
             }
@@ -248,7 +248,7 @@
         
         function launchFirework() {
             // --- MODIFIED: Increased simultaneous fireworks ---
-            if (fireworks.length < 40) { // Was 10
+            if (fireworks.length < 80) { // Was 10
                 const startX = canvas.width / 2;
                 const startY = canvas.height;
                 const targetX = random(0, canvas.width);
@@ -276,7 +276,7 @@
         }
         
         // --- MODIFIED: Increased launch frequency ---
-        setInterval(launchFirework, 400); // Was 800
+        setInterval(launchFirework, 200); // Was 800
         window.onload = fireworksLoop;
 
         window.addEventListener('resize', () => {
